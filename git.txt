@@ -1,3 +1,265 @@
-d1
-d5
-d7
+local curl = require('lcurl')
+curl.easy{
+    url = 'http://httpbin.org/get',
+    httpheader = {
+      "X-Test-Header1: Header-Data1",
+      "X-Test-Header2: Header-Data2",
+    },
+    writefunction = alert -- use io.stderr:write()
+  }
+  :perform()
+:close()
+
+-- HTTP Post
+curl.easy()
+  :setopt_url('http://posttestserver.com/post.php')
+  :setopt_writefunction(io.write)
+  :setopt_httppost(curl.form() -- Lua-cURL guarantee that form will be alive
+    :add_content("test_content", "some data", {
+      "MyHeader: SomeValue"
+    })
+    :add_buffer("test_file", "filename", "text data", "text/plain", {
+      "Description: my file description"
+    })
+    :add_file("test_file2", "BuildLog.htm", "application/octet-stream", {
+      "Description: my file description"
+    })
+  )
+  :perform()
+:close()
+Top
+
+#LuaSocket
+LuaSocket is a Lua extension library which supported TCP, UDP, SMTP, HTTP, FTP protocols. Learn how to use it from the Learn More.
+
+Top
+
+#LuaSec
+LuaSec is a binding for OpenSSL library to provide TLS/SSL communication. It takes an already established TCP connection and creates a secure session between the peers.Learn More
+
+Top
+
+#LuaSqlite3
+LuaSQLite 3 is a thin wrapper around the public domain SQLite3 database engine. Learn More
+
+Top
+
+#json.lua
+json.lua provides operation methods on json. GitHub LICENSE
+
+Usage
+
+local json = require "json"
+local jsonString =json.encode({ 1, 2, 3, { x = 10 } }) -- Returns '[1,2,3,{"x":10}]'
+local luaTable = json.decode('[1,2,3,{"x":10}]') -- Returns { 1, 2, 3, { x = 10 } }
+Top
+
+#Plist
+Plist library provides a batch of methods to operate on plist files.
+
+Usage
+
+local plist = require("plist")
+
+-- Read a plist file, return it as a lua table, return nil if failed.
+local luaTable = plist.read(plistFilePath);
+
+-- Write a lua table as a plist into a file, the foramt parameter specifis "xml", "binary" you want to write with.
+local done = plist.write(luaTable, plistFilePath, format);
+
+-- Load a plist string to lua table.
+local luaTable = plist.load(plistString);
+
+-- Dump a lua table to plist data with format "xml" or "binary"
+local plistData = plist.dump(luaTable, format);
+Top
+
+#Penlight
+A set of pure Lua libraries focusing on input data handling (such as reading configuration files), functional programming (such as map, reduce, placeholder expressions,etc), and OS path management. GitHub Document LICENSE
+
+It has plenty of modules:
+
+Paths, Files and Directories
+
+path: queries like isdir,isfile,exists, splitting paths like dirname and basename
+dir: listing files in directories (getfiles,getallfiles) and creating/removing directory paths
+file: copy,move; read/write contents with read and write
+Application Support
+
+app: require_here to rebase require to work with main script path; simple argument parsing parse_args
+lapp: sophisticated usage-text-driven argument parsing for applications
+config: flexibly read Unix config files and Windows INI files
+strict: check for undefined global variables - can use strict.module for modules
+utils,compat: Penlight support for unified Lua 5.1/5.2 codebases
+types: predicates like is_callable and is_integer; extended type function.
+Extra String Operations
+
+utils: can split a string with a delimiter using utils.split
+stringx: extended string functions covering the Python string type
+stringio: open strings for reading, and creating strings using standard Lua IO methods
+lexer: lexical scanner for splitting text into tokens; special cases for Lua and C
+text: indenting and dedenting text, wrapping paragraphs; optionally make % work as in Python
+template: small but powerful template expansion engine
+sip: Simple Input Patterns - higher-level string patterns for parsing text
+Extra Table Operations
+
+tablex: copying, comparing and mapping over
+pretty: pretty-printing Lua tables, and various safe ways to load Lua as data
+List: implementation of Python 'list' type - slices, concatenation and partitioning
+Map, Set, OrderedMap: classes for specialized kinds of tables
+data: reading tabular data into 2D arrays and efficient queries
+array2d: operations on 2D arrays
+permute: generate permutations
+Iterators, OOP and Functional
+
+seq: working with iterator pipelines; collecting iterators as tables
+class: a simple reusable class framework
+func: symbolic manipulation of expressions and lambda expressions
+utils: utils.string_lambda converts short strings like |x| x^2 into functions
+comprehension: list comprehensions: C'x for x=1,4'()=={1,2,3,4}
+Top
+
+#LuaFileSystem
+LuaFileSystem is a Lua library developed to complement the set of functions related to file systems offered by the standard Lua distribution.
+
+LuaFileSystem offers a portable way to access the underlying directory structure and file attributes.Learn More
+
+Top
+
+#WebSocket
+This module provides Lua modules for Websocket Version 13 conformant clients and servers.
+
+GitHub LICENSE Examples
+
+Usage
+
+-- Client
+-- connects to a echo websocket server running a localhost:8080
+-- sends a strong every second and prints the echoed messages
+-- to stdout
+
+local ev = require'ev'
+local ws_client = require('websocket.client').ev()
+
+ws_client:on_open(function()
+    print('connected')
+  end)
+
+ws_client:connect('ws://echo.websocket.org','echo')
+
+ws_client:on_message(function(ws, msg)
+    print('received',msg)
+  end)
+
+local i = 0
+
+ev.Timer.new(function()
+    i = i + 1
+    ws_client:send('hello '..i)
+end,1,1):start(ev.Loop.default)
+
+ev.Loop.default:loop()
+Top
+
+#Extension Functions
+Extension functions are used to extend Lua language. Thus, the device can simulate some human abilities of operating the mobile phone. Moreover, extension functions also support functions including: screenshot, color searching, color matching, and picture matching.
+
+Top
+
+#touchDown(id, x, y)
+Press the coordinate (x,y) on the screen.
+
+Parameters
+
+Parameter	Type	Specification
+id	Integer	Finger ID. is used to mark a finger in single-touch or multi-touch.
+x	Float	x-coordinate on the screen
+y	Float	y-coordinate on the screen
+Return
+
+None
+
+Examples
+
+-- Press by one finger at coordinate (100,200).
+touchDown(0, 100, 200); 
+
+-- Press by three fingers at three locations on the screen.
+touchDown(0, 100, 200);
+touchDown(1, 200, 300);
+touchDown(2, 300, 400);
+
+-- Implement a tap function
+function tap(x, y)
+    touchDown(0, x, y);
+    usleep(16000);
+    touchUp(0, x, y);
+end
+
+-- Tap at (100, 200)
+tap(100, 200);
+
+Top
+
+#touchMove(id, x, y)
+Move the finger to coordinate (x,y).
+
+Parameters
+
+Parameter	Type	Specification
+id	Integer	Finger ID. is used to mark a finger in single-touch or multi-touch.
+x	Float	x-coordinate on the screen
+y	Float	y-coordinate on the screen
+Return
+
+None
+
+Examples
+
+-- Press by one finger at coordinate (100,200) and move the finger to coordinate (200,200).
+touchDown(0, 100, 200);
+usleep(16000);
+touchMove(0, 200, 200);
+
+-- Press by three fingers at three locations on the screen and move to new location.
+touchDown(0, 100, 200);
+touchDown(1, 200, 300);
+touchDown(2, 300, 400);
+usleep(16000);
+touchMove(0, 150, 250);
+touchMove(1, 250, 350);
+touchMove(2, 350, 450);
+
+Top
+
+#touchUp(id, x, y)
+Lift the finger from coordinate (x,y)
+
+Parameters
+
+Parameter	Type	Specification
+id	Integer	Finger ID. is used to mark a finger in single-touch or multi-touch.
+x	Float	x-coordinate on the screen
+y	Float	y-coordinate on the screen
+Return
+
+None
+
+Examples
+
+-- Click the screen once by one finger at coordinate (100,200).
+touchDown(0, 100, 200);
+usleep(16000);
+touchUp(0, 100, 200);
+
+-- Press by three fingers at three locations on the screen, move to new location, and then lift the finger.
+touchDown(0, 100, 200);
+touchDown(1, 200, 300);
+touchDown(2, 300, 400);
+usleep(16000);
+touchMove(0, 150, 250);
+touchMove(1, 250, 350);
+touchMove(2, 350, 450);
+usleep(16000);
+touchUp(0, 150, 250);
+touchUp(1, 250, 350);
